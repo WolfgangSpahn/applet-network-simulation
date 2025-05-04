@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 580 510"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="desktop.svg"
+   width="580"
+   height="510"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="true"
+     inkscape:zoom="1.9648438"
+     inkscape:cx="288.06362"
+     inkscape:cy="256"
+     inkscape:window-width="3840"
+     inkscape:window-height="2091"
+     inkscape:window-x="0"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1">
+    <inkscape:grid
+       id="grid1"
+       units="px"
+       originx="0"
+       originy="0"
+       spacingx="2"
+       spacingy="2"
+       empcolor="#0099e5"
+       empopacity="0.30196078"
+       color="#0099e5"
+       opacity="0.14901961"
+       empspacing="5"
+       enabled="true"
+       visible="true" />
+  </sodipodi:namedview>
+  <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+  <path
+     d="M 60,0 C 24.7,0 0,24.7 0,60 v 290 c 0,35.3 24.7,60 60,60 h 180 l -10,40 h -70 c -17.7,0 -20,12.3 -20,30 0,17.7 2.3,30 20,30 h 260 c 17.7,0 20,-12.3 20,-30 0,-17.7 -2.3,-30 -20,-30 h -70 l -10,-40 h 170 c 35.3,0 70,-24.7 70,-60 V 60 C 580,24.7 547.3,0 512,0 Z M 510,60 V 290 H 60 V 60 Z"
+     id="path1"
+     sodipodi:nodetypes="ssssccssssssccsssssccccc" />
+</svg>
