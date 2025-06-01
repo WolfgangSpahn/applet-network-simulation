@@ -26,6 +26,15 @@ const PrinterPopup = ({ selectedPrinter, onClose, onPing, onPreferences }) => {
         >
           Print Test Page
         </button>
+        <button
+          class="block w-full text-left px-2 py-1 hover:bg-gray-700"
+          onClick={() => {
+            onPing(selectedPrinter);
+            onClose();
+          }}
+        >
+          Ping
+        </button>
       </div>
     );
   };

@@ -1,10 +1,10 @@
 import { createSignal } from "solid-js";
 
-const NotifyPrintTestPage = ({ selectedComputer, title, message, onClose }) => {
+const NotifyPrintTestPage = ({ selectedComputer, title, message, success, onClose }) => {
 
   return (
-    <div  class="computer-pref absolute m-4 bg-gray-900 text-white"
-          style={{ top: `${selectedComputer.position[1]-300}px`, left: `${selectedComputer.position[0]-100}px` }}
+    <div  class={`computer-pref absolute p-4 ${success() ? "bg-green-900" : "bg-red-900"} text-white rounded shadow-lg`}
+          style={{ top: `${selectedComputer.position[1]-300}px`, left: `${selectedComputer.position[0]}px` }}
       onClick={(e) => e.stopPropagation()}
     >
       <h2 class="text-lg font-bold mb-4">{title}</h2>

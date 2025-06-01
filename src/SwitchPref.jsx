@@ -3,7 +3,7 @@ import { createSignal, createEffect, For, onCleanup, on } from "solid-js";
 import { forwardingTable, setForwardingTable } from "./FWDTableStore";
 import { nodes_data } from "./data";
 
-const SwitchPref = ({ selectedSwitch, allowedPorts, setAllowedPorts, onClose }) => {
+const SwitchPref = ({ selectedSwitch, allowedPorts, setAllowedPorts, setShowEmilieNotification, onClose }) => {
   const [switchType, setSwitchType] = createSignal(selectedSwitch?.forwarding || "clientIsolation");
   const [name, setName] = createSignal(selectedSwitch?.name || "no switch selected");
   const [error, setError] = createSignal("");
@@ -97,6 +97,7 @@ const SwitchPref = ({ selectedSwitch, allowedPorts, setAllowedPorts, onClose }) 
                       } else {
                         return prev.filter((port) => port !== id);
                       }
+
                       return prev;
                     });
                   }}
@@ -118,7 +119,7 @@ const SwitchPref = ({ selectedSwitch, allowedPorts, setAllowedPorts, onClose }) 
                     <input
                       type="text"
                       class="bg-gray-700 text-white p-2 rounded w-full"
-                      value={entry.destinationMac}
+                      value={entry.showMobilePopup}
                       onInput={(e) =>
                       updateForwardingTable(index(), "destinationMac", e.target.value)
                       }
@@ -149,6 +150,7 @@ const SwitchPref = ({ selectedSwitch, allowedPorts, setAllowedPorts, onClose }) 
               class="bg-green-500 hover:bg-green-600 text-white p-2 rounded"
               onClick={() => {
                 console.log("Save computer preferences");
+                setShowEmilieNotification(true);
                 onClose();
               }}
             >

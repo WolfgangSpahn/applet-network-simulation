@@ -1,0 +1,116 @@
+diff --git a/src/NetworkSimulator.jsx b/src/NetworkSimulator.jsx
+index 32280ea..c9ae7da 100644
+--- a/src/NetworkSimulator.jsx
++++ b/src/NetworkSimulator.jsx
+@@ -18,7 +18,7 @@ import Tooltip from "./Tooltip";
+ import TooltipSVG from "./TooltipSVG";
+ import { forwardingTable, setForwardingTable } from "./FWDTableStore";
+ // import data
+-import { nodes_data, edges } from "./data.js";
++import { nodes_data, edges, getNode } from "./data.js";
+ 
+ 
+ 
+@@ -47,6 +47,28 @@ function getValidThreads(currentNodes, nextNodes, threadIndex) {
+ }
+ 
+ 
++// get host id (last int) from ip string
++function getHostId(ip) {
++  if (typeof ip !== 'string') {
++    console.error("Invalid input: IP must be a string.");
++    return null;
++  }
++
++  const parts = ip.trim().split('.');
++  if (parts.length !== 4) {
++    console.error("Invalid IP format: Must contain four octets.");
++    return null;
++  }
++
++  const hostId = parseInt(parts[3], 10);
++  if (isNaN(hostId)) {
++    console.error("Invalid host ID: Last segment is not a number.");
++    return null;
++  }
++
++  return hostId;
++}
++
+ let pathRefs = []; // Store path references globally
+ 
+ 
+@@ -93,6 +115,13 @@ const App = () => {
+     // get the last nodes
+     let lastNodes = lastNodeIds.map(id => getNodeById(id));
+ 
++    // --- added to show multicast behaviour
++    // filter out selectedComputer().id from allowPorts to get targets
++    let targets = allowedPorts().filter(id => id !== node.id);
++    thread[thread.length - 1] = targets;
++    console.log("thread:", thread);
++    // ---
++
+     // update forwarding table entry for the selected computer [{ destinationMac: "b2:77:3a:8c:14:5f", port: "to 255" }]
+     // add forwarding table entry for each last node
+     lastNodes.forEach(node => {
+@@ -162,8 +191,8 @@ const App = () => {
+     // check of print is available in availablePrinters
+     if (availablePrinters().some(p => p.id === printer.id)) {
+       console.log("handlePrintTestPage: Printer available");
+-      // check if printer ip is in the subnet of the computer
+-      if (printer && printer.ip.startsWith(computer.subnet)&&!printer.ip.endsWith(computer.id)) {
++      // check if printer ip is in the subnet of the computer // ------- added ------------
++      if (printer && printer.ip.startsWith(computer.subnet) && getHostId(printer.ip)==13) {
+         // alert(`Print test page to ${printer.name}`);
+         setMessage(`Print test page to ${printer.name}`);
+         setShowNotification(true);
+@@ -185,8 +214,11 @@ const App = () => {
+ 
+   createEffect(() => {
+     console.log("broadcast has changed:", discoveredPrinter());
+-    // if 13 is in allowedPorts
+-    if (allowedPorts().includes(13)) {
++    let printer = nodes.find(n => n.type === "printer");
++    let computer = nodes.find(n => n.type === "computer");
++    // if port 13 and 4 are allowed port and printer IP is in computer subnet and printer IP ends on printer id
++    // ---                         // ---------------------------------- added
++    if (allowedPorts().includes(13)&&(allowedPorts().includes(4))&&(printer.ip == `${computer.subnet}.${printer.id}`)) {
+     // if discoveredPrinter is true, set availablePrinters to [{ id: 1, name: "HPP 1000" }]
+       setAvailablePrinters([{ id: 13, name: "HPP 1000" }]);
+     } else {
+diff --git a/src/SelectPrinterDialog.jsx b/src/SelectPrinterDialog.jsx
+index e93dc48..4bcabb8 100644
+--- a/src/SelectPrinterDialog.jsx
++++ b/src/SelectPrinterDialog.jsx
+@@ -2,7 +2,6 @@ import { createSignal } from "solid-js";
+ 
+ const SelectPrinterDialog = ({selectedComputer, availablePrinters, selectedPrinter, setSelectedPrinter, onConfirm, onClose }) => {
+   
+-
+   return (
+     <div
+       class="select-printer-dialog absolute top-40 left-0 m-4 bg-gray-800 text-white p-6 rounded-lg shadow-lg"
+diff --git a/src/data.js b/src/data.js
+index 320351d..bb05c9d 100644
+--- a/src/data.js
++++ b/src/data.js
+@@ -17,4 +17,16 @@ export const edges = [
+     { id: 4, nodes: [255, 0], type: "fixed"  },
+     { id: 5, nodes: [1, 61], type: "wireless"  },
+     { id: 6, nodes: [1, 76], type: "wireless"  }
+-  ];
+\ No newline at end of file
++  ];
++
++  // --- added
++
++  // Get node by ID
++export function getNode(data, id) {
++  const node = data.find(n => n.id === id);
++  if (!node) {
++    console.error(`Node with ID ${id} not found.`);
++    return null;
++  }
++  return node;
++}

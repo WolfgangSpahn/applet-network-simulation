@@ -71,32 +71,38 @@ const ComputerPref = ({ selectedComputer, onClose }) => {
           </div>
   
           <div class="flex flex-col">
-            <span class="mb-2">IP-Address (Subnet.Id):</span>
-            <label class="flex space-x-2 w-full">
-              <input
-                type="text"
-                class="bg-gray-700 text-white p-2 rounded flex-grow"
-                value={subnet()}
-                onInput={(e) => {
-                  setSubnet(e.target.value);
-                  validateInputs();
-                }}
-                placeholder="Subnet"
-                title="Enter the subnet portion of the IP address (Format: XXX.XXX.XXX)"
-              />
-              <span>.</span>
-              <input
-                type="text"
-                class="bg-gray-700 text-white p-2 rounded w-12"
-                value={id()}
-                onInput={(e) => {
-                  setId(e.target.value);
-                  validateInputs();
-                }}
-                placeholder="ID"
-                title="Enter the host ID portion of the IP address (Format: XXX)"
-              />
-            </label>
+            <span class="mb-2">IP-Address:</span>
+            <div class="flex items-end space-x-2 w-full">
+              <div class="flex flex-col flex-grow">
+                <span class="text-sm mb-1">Subnet</span>
+                <input
+                  type="text"
+                  class="bg-gray-700 text-white p-2 rounded w-full"
+                  value={subnet()}
+                  onInput={(e) => {
+                    setSubnet(e.target.value);
+                    validateInputs();
+                  }}
+                  placeholder="XXX.XXX.XXX"
+                  title="Enter the subnet portion of the IP address (Format: XXX.XXX.XXX)"
+                />
+              </div>
+              <span class="pb-2">.</span>
+              <div class="flex flex-col">
+                <span class="text-sm mb-1">Id</span>
+                <input
+                  type="text"
+                  class="bg-gray-700 text-white p-2 rounded w-12"
+                  value={id()}
+                  onInput={(e) => {
+                    setId(e.target.value);
+                    validateInputs();
+                  }}
+                  placeholder="XXX"
+                  title="Enter the host ID portion of the IP address (Format: XXX)"
+                />
+              </div>
+            </div>
           </div>
           {name() && macAddress() && subnet() && id() && !error() && (
             <button

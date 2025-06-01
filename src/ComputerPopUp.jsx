@@ -21,6 +21,14 @@ const ComputerPopup = ({ selectedComputer, onClose, onPing, onPrinterSelect, onP
           class="block w-full text-left px-2 py-1 hover:bg-gray-700"
           onClick={() => {
             onPing(selectedComputer);
+            onClose();
+          }}>Ping
+        </button>
+
+        <button
+          class="block w-full text-left px-2 py-1 hover:bg-gray-700"
+          onClick={() => {
+            onPing(selectedComputer);
             onPrinterSelect(selectedComputer);
             onClose();
           }}

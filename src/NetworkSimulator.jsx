@@ -10,13 +10,17 @@ import Cloud from "./Cloud";
 import Mobile from "./Mobile";
 import SwitchPref from "./SwitchPref.jsx"; 
 import ComputerPref from "./ComputerPref";
+import TVPopup from "./TVPopup.jsx";
+import MobilePopup from "./MobilePopup.jsx";
 import ComputerPopUp from "./ComputerPopUp"; 
 import PrinterPref from "./PrinterPref";
 import NotifyPrintTestPage from "./NotifyPrintTestPage";
+import NotifyOnEmilieInfo from "./NotifyOnEmilieInfo";
 import SelectPrinterDialog from "./SelectPrinterDialog";
 import Tooltip from "./Tooltip";
 import TooltipSVG from "./TooltipSVG";
 import { forwardingTable, setForwardingTable } from "./FWDTableStore";
+import { _ , state } from "./multilang";
 // import data
 import { nodes_data, edges } from "./data.js";
 
@@ -51,22 +55,38 @@ let pathRefs = []; // Store path references globally
 
 
 // --------------------------------------------------------------------------------------------------------
-const App = () => {
+export const NetworkSimulator = (props) => {
+  console.log("NetworkSimulator props:", props.width, props.height);
+
+  const [width, setWidth] = createSignal(props.width || 500);
+  const [height, setHeight] = createSignal(props.height || 500);
+  const [scaleX, setScaleX] = createSignal(props.width/500);
+  const [scaleY, setScaleY] = createSignal(props.height/500);
+  const [scale, setScale] = createSignal(props.height/500);
+
+  const [logBook, setLogBook] = createSignal("Log:"); // Track logbook entries
   //const [positions, setPositions] = createSignal([{ id: thread[0], pos: getNodeById(thread[0]).position }]);
   const [targetColor, setTargetColor] = createSignal("white"); // Track target color
   const [sourceColor, setSourceColor] = createSignal("blue"); // Track source color
   const [discoveredPrinter, setDiscoveredPrinter] = createSignal(false); // Track broadcast state
   const [clickedSwitch, setClickedSwitch] = createSignal(null); // Track selected Switch
   const [clickedComputer, setClickedComputer] = createSignal(null); // Track selected computer
+  const [clickedTV, setClickedTV] = createSignal(null); // Track selected TV
+  const [clickedMobile, setClickedMobile] = createSignal(null); // Track selected mobile
   const [showSwitchPref, setShowSwitchPref] = createSignal(false); // Track SwitchPref visibility
   const [showComputerPref, setShowComputerPref] = createSignal(false); // Track Computer
+  const [showTVPopup, setShowTVPopup] = createSignal(false); // Track TVPopup visibility
+  const [showMobilePopup, setShowMobilePopup] = createSignal(false); // Track MobilePopup visibility
   const [showPopUp, setShowPopUp] = createSignal(false); // Track PopUp visibility
+
   
   const [clickedPrinter, setClickedPrinter] = createSignal(null); // Track selected printer
 
   const [showPrinterPref, setShowPrinterPref] = createSignal(false); // Track PrinterPref visibility
   const [showNotification, setShowNotification] = createSignal(false); // Track notification visibility
+  const [showEmilieNotification, setShowEmilieNotification] = createSignal(false); // Track Emilie notification visibility
   const [message, setMessage] = createSignal(""); // Track notification message
+  const [success, setSuccess] = createSignal(false); // Track success state
   const [showPrinterSelect, setShowPrinterSelect] = createSignal(false); // Track PrinterSelect visibility
   const [availablePrinters, setAvailablePrinters] = createSignal([]); // Available printers { id: 1, name: "Printer 1" },
   // stores
@@ -82,7 +102,25 @@ const App = () => {
   //const [computerPreferences, setComputerPreferences] = createStore({}); // Store node preferences { nodeId: { name, mac, subnet, id } }
   //const [printerPreferences, setPrinterPreferences] = createStore({}); // Store printer preferences { nodeId: { name, subnet, id } }
 
+    // Handle submit button click
+    const handleSubmit = (event) => {
+      // execute the submit logic here: props.onSubmit()
+      // let submitText = `Material: ${_(material())}, θ_i: ${incomingAngle().toFixed(0)}°, θ_t: ${transmittedAngle().toFixed(0)}°`;
+      let submitText = logBook();
+      // if props.onSubmit is a function, call it
+
+      props.onSubmit({
+                          preventDefault: () => {},
+                          target: { value: submitText }
+                      });
+
+      setLogBook("");
+    };
+
   const handleDeviceClick = (node) => {
+    console.log(`Device ${node.id} clicked! Initiate multicast ping.`);
+    // add a logbook entry
+    setLogBook(prev => `${prev}[Device ${node.type} ${node.id} clicked!  Initiate multicast ping.]`);
     // deep copy unicastThread
     thread = JSON.parse(JSON.stringify(unicastThread));
     thread[0] = node.id;
@@ -109,6 +147,7 @@ const App = () => {
           ...prev,
           { destinationMac: node.mac, port: `to ${node.id === 0? 255 : node.id}` }
         ]);
+        setLogBook(prev => `${prev}[Forwarding table entry added for ${node.mac} to ${node.id}]`);
       }
     });
     // set forwarding table entry for the selected computer
@@ -122,22 +161,41 @@ const App = () => {
 
   const handlePrinterClick = (node) => {
     console.log(`Printer ${node.id} clicked!`);
+    setLogBook(prev => `${prev}[Printer ${node.id} clicked!]`);
     // setShowPrinterPref(true);
     setClickedPrinter(node); // Set the clicked printer ID
   };
 
+  const handleTVClick = (node) => {
+    console.log(`=> TV ${node.id} clicked!`);
+    setLogBook(prev => `${prev}[TV ${node.id} clicked!]`);
+    setShowTVPopup(true);
+    setClickedTV(node); // Set the clicked TV ID
+  };
+
+  const handleMobileClick = (node) => {
+    console.log(`Mobile ${node.id} clicked!`);
+    setLogBook(prev => `${prev}[Mobile ${node.id} clicked!]`);
+    setShowMobilePopup(true);
+    setClickedMobile(node); // Set the clicked Mobile ID
+  };
+
   const handleSwitchClick = (node) => {
+    setLogBook(prev => `${prev}[Switch ${node.id} clicked!]`);
     setShowSwitchPref(true);
     setClickedSwitch(node); // Set the clicked Switch ID
   };
 
   const handleComputerClick = (node) => {
+    setLogBook(prev => `${prev}[Computer ${node.id} clicked!]`);
     setShowPopUp(true);
     setClickedComputer(node); // Set the clicked computer ID
 
   };
 
   const handleComputerPreferences = (node) => {
+    console.log(`Computer ${node.id} preferences clicked!`);
+    setLogBook(prev => `${prev}[Computer ${node.id} preferences clicked!]`);
     console.debug(`Preferences for Computer ${node.id}`);
     setShowComputerPref(true);
     setClickedComputer(node);
@@ -149,8 +207,10 @@ const App = () => {
 
   const handlePrinterIpChange = (id, data) => {
     console.log("Printer IP changed:", id, data);
+    setLogBook(prev => `${prev}[Printer ${id} IP changed to ${data.ip}]`);
     // change node ip with id
     setNodes((node) => node.id === id, "ip", data.ip );
+    setShowEmilieNotification(true);
   }
 
   const handlePrintTestPage = (computer) => {
@@ -163,19 +223,28 @@ const App = () => {
     if (availablePrinters().some(p => p.id === printer.id)) {
       console.log("handlePrintTestPage: Printer available");
       // check if printer ip is in the subnet of the computer
-      if (printer && printer.ip.startsWith(computer.subnet)&&!printer.ip.endsWith(computer.id)) {
+      if (printer && printer.ip.startsWith(computer.subnet)&&!printer.ip.endsWith(computer.id)&&selectedPrinter()===printer.id) {
         // alert(`Print test page to ${printer.name}`);
         setMessage(`Print test page to ${printer.name}`);
+        setLogBook(prev => `${prev}[Print test page to ${printer.name}]`);
         setShowNotification(true);
+        setSuccess(true);
+        props.onSubmit({
+          preventDefault: () => {},
+          target: { value: "Success!! Test page is printed!!!" }
+        });
       } else {
         // alert(`Could not print test page to ${printer.name}`);
         setMessage(`Could not print test page to ${printer.name}`);
+        setLogBook(prev => `${prev}[Could not print test page to ${printer.name}]`);
         setShowNotification(true);
+        setSuccess(false);
       }
     } else {
       // alert(`Printer not available`);
       console.log("handlePrintTestPage: Printer not available");
       setMessage(`Printer not available`);
+      setLogBook(prev => `${prev}[Printer not available]`);
       setShowNotification(true);
     }
   }
@@ -189,6 +258,7 @@ const App = () => {
     if (allowedPorts().includes(13)) {
     // if discoveredPrinter is true, set availablePrinters to [{ id: 1, name: "HPP 1000" }]
       setAvailablePrinters([{ id: 13, name: "HPP 1000" }]);
+      setLogBook(prev => `${prev}[switch port to Printer ${13} is open]`);
     } else {
       setAvailablePrinters([]);
     }
@@ -249,7 +319,7 @@ const App = () => {
     }
     
     let newThreads = new Map();
-    const steps = 30;
+    const steps = 50;
 
     activeThreads.forEach(({ threadIndex, nodeId, nextNodeId}) => {
         console.debug(`current: ${nodeId}`,`next: ${nextNodeId}`);
@@ -347,9 +417,46 @@ const App = () => {
     cancelAnimationFrame(animationFrame);
   });
 
+  const addSubmitButton = (svgWidth, svgHeight) => {
+    const buttonWidth = 100;
+    const buttonHeight = 30;
+    const buttonX = 20; // Offset from the left
+    const buttonY = svgHeight - buttonHeight - 20; // Offset from the bottom
+    const infoX = buttonX + buttonWidth + 10; // Offset text from the button
+
+    return (
+      <g
+        cursor="pointer"
+        onClick={handleSubmit} // Replace with desired functionality
+      >
+        {/* Button Background */}
+        <rect
+          x={buttonX}
+          y={buttonY}
+          width={buttonWidth}
+          height={buttonHeight}
+          fill="#4caf50" // Green button background
+          rx="5" // Rounded corners
+          ry="5"
+        />
+        {/* Button Label */}
+        <text
+          x={buttonX + buttonWidth / 2}
+          y={buttonY + buttonHeight / 2 + 5} // Adjust for text alignment
+          fill="white"
+          font-size="14"
+          font-family="Arial, sans-serif"
+          text-anchor="middle"
+        >
+          {_("submit")}
+        </text>
+      </g>
+    );
+  };
+
   return (
     <div class="bg-gray-900 relative border text-sm" onClick={handleOutsideClick}> 
-    <svg width="500" height="500">
+    <svg width={props.width} height={props.height}>
       {edges.map((edge, index) => {
         const startNode = getNodeById(edge.nodes[0]);
         const endNode = getNodeById(edge.nodes[1]);
@@ -357,7 +464,7 @@ const App = () => {
         return (
           <path
             ref={(el) => (pathRefs[index] = el)}
-            d={`M ${startNode.position[0]} ${startNode.position[1]} L ${endNode.position[0]} ${endNode.position[1]}`}
+            d={`M ${startNode.position[0]*scaleX()} ${startNode.position[1]*scaleY()} L ${endNode.position[0]*scaleX()} ${endNode.position[1]*scaleY()}`}
             stroke="white"
             fill="none"
             stroke-width={edge.type === "internal"? "8" : "1"}
@@ -365,18 +472,18 @@ const App = () => {
           />
         );
       })}
-      {/* draw text to top right of the viewport */}
-      <text x={10} y={30} fill="white" fontSize="12" fontWeight="bold">
-        Subnet: {"192.168.1"}
+      {/* draw text to top left of the viewport */}
+      <text x={10} y={30} fill="white" fontSize="16" fontWeight="bold">
+        NetworkSim Version 0.8 -- <tspan style="font-size: 18px; font-weight: bold;">Subnet: {"192.168.1"}</tspan>
       </text>
       {nodes.map((node) => (
         <g>
             {/* Draw either Switch or Computer based on node type */}
             {node.type === "Switch" ? (
           <Switch
-            x={node.position[0]}
-            y={node.position[1]}
-            scale={1}
+            x={node.position[0]*scaleX()}
+            y={node.position[1]*scaleY()}
+            scale={scale()}
             onClick={(e) => {
               e.stopPropagation(); // Prevent closing when clicking on Switch
               handleSwitchClick(node);
@@ -384,9 +491,9 @@ const App = () => {
           />
         ) : node.type === "router" ? (
           <Router
-            x={node.position[0]}
-            y={node.position[1]}
-            scale={1}
+            x={node.position[0]*scaleX()}
+            y={node.position[1]*scaleY()}
+            scale={scale()}
             onClick={(e) => {
               e.stopPropagation(); // Prevent closing when clicking on Router
               handleDeviceClick(node);
@@ -394,9 +501,9 @@ const App = () => {
           />
         ) : node.type === "printer" ? (
           <Printer
-            x={node.position[0]}
-            y={node.position[1]}
-            scale={0.7}
+            x={node.position[0]*scaleX()}
+            y={node.position[1]*scaleY()}
+            scale={0.7*scale()}
             role={node.role}
             color={node.color}
             onClick={(e) => {
@@ -406,31 +513,31 @@ const App = () => {
           />
         ) : node.type === "tv" ? (
           <TV
-            x={node.position[0]}
-            y={node.position[1]}
-            scale={0.7}
+            x={node.position[0]*scaleX()}
+            y={node.position[1]*scaleY()}
+            scale={0.7*scale()}
             color={node.color}
             onClick={(e) => {
               e.stopPropagation(); // Prevent closing when clicking on Router
-              handleDeviceClick(node);
+              handleTVClick(node);
             }}
           />
         ) : node.type === "mobile" ? (
           <Mobile
-            x={node.position[0]}
-            y={node.position[1]}
-            scale={0.7}
+            x={node.position[0]*scaleX()}
+            y={node.position[1]*scaleY()}
+            scale={0.7*scale()}
             color={node.color}
             onClick={(e) => {
               e.stopPropagation(); // Prevent closing when clicking on Router
-              handleDeviceClick(node);
+              handleMobileClick(node);
             }}
           />
         ) : node.type === "cloud" ? (
           <Cloud
-            x={node.position[0]}
-            y={node.position[1]}
-            scale={3}
+            x={node.position[0]*scaleX()}
+            y={node.position[1]*scaleY()}
+            scale={3*scale()}
             onClick={(e) => {
               e.stopPropagation(); // Prevent closing when clicking on Router
               handleDeviceClick(node);
@@ -438,8 +545,8 @@ const App = () => {
           />
         ) : (
           <Computer
-            x={node.position[0]}
-            y={node.position[1]}
+            x={node.position[0]*scaleX()}
+            y={node.position[1]*scaleY()}
             role={node.role}
             color={node.color}
             onClick={(e) => {
@@ -449,11 +556,11 @@ const App = () => {
           />
         )}
 
-
+        {addSubmitButton(width(), height())}
 
         {/* Node ID label */}
-        <Tooltip x={node.position[0] + 10} y={node.position[1] - 25} text={`id=${node.id}`} >
-          <text x={node.position[0] + 30} y={node.position[1] - 25} fill="white" fontSize="12" fontWeight="bold">
+        <Tooltip x={node.position[0]*scaleX() + 10} y={node.position[1]*scaleY() - 25} text={`id=${node.id}`} >
+          <text x={node.position[0]*scaleX() + 30} y={node.position[1]*scaleY() - 25} fill="white" fontSize="12" fontWeight="bold">
           {node.id}
           </text>
         </Tooltip>
@@ -472,13 +579,14 @@ const App = () => {
       {positions().map(pos => (
         <circle
           id={`circle-${pos.id}`} // Ensure each circle has a unique ID
-          cx={pos.pos.x}
-          cy={pos.pos.y}
+          cx={pos.pos.x*scaleX()}
+          cy={pos.pos.y*scaleY()}
           r="8"
           fill="url(#halfRedHalfGreen)" // Apply the sharp gradient
         />
       ))}
-          <TooltipSVG /> Always on top
+      
+      <TooltipSVG /> 
     </svg>
 
     {/* Display the SwitchPref component when a Switch is selected */}
@@ -486,6 +594,7 @@ const App = () => {
       <SwitchPref selectedSwitch={clickedSwitch()}
         allowedPorts={allowedPorts}
         setAllowedPorts={setAllowedPorts}
+        setShowEmilieNotification={setShowEmilieNotification}
         onClose ={() => setShowSwitchPref(false)} />
     )}
     {/* Display the ComputerPref component when a computer is selected */}
@@ -504,6 +613,7 @@ const App = () => {
         onConfirm={(printerId) => {
           console.log("Selected printer ID:", printerId);
           setShowPrinterSelect(false);
+          setLogBook(prev => `${prev}[Printer ${printerId} selected]`);
         }}
         onClose={() => setShowPrinterSelect(false)}
       />
@@ -516,6 +626,25 @@ const App = () => {
         onClose={() => setClickedPrinter(null)}
       />
     )}
+    {clickedTV() && showTVPopup() && (
+      <TVPopup
+        selectedDevice={clickedTV()}
+        onClose={() => setShowTVPopup(false)}
+        onPing={(node) => {
+          handleDeviceClick(node);
+        }}
+        /> 
+    )}
+    {clickedMobile() && showMobilePopup() && (
+      <TVPopup
+        selectedDevice={clickedMobile()}
+        onClose={() => setShowMobilePopup(false)}
+        onPing={(node) => {
+          handleDeviceClick(node);
+        }}
+        />
+    )}
+      
     {/* Pop-up menu for computer options */}
     {clickedComputer() && showPopUp() &&(
       <ComputerPopUp
@@ -547,6 +676,7 @@ const App = () => {
           setTargetColor("gray"); // Update target color to green
           redoAnimation();
           }}
+        
         onPrinterSelect={handlePrinterSelect}
         onPrintTestPage={handlePrintTestPage}
         onPreferences={handleComputerPreferences}
@@ -558,13 +688,24 @@ const App = () => {
         selectedComputer={clickedComputer()}
         title="Print a test page"
         message={message}
+        success={success}
         onClose={() => setShowNotification(false)}
       />
     )}
-    {/* Notification for selecting printer */}
+    {/* Notification for Emilie Info */}
+    {showEmilieNotification() && (
+      <NotifyOnEmilieInfo
+        selectedComputer={clickedPrinter()}
+        title="Alert"
+        message={"Please inform Emilie!"}
+        onClose={() => setShowEmilieNotification(false)}
+      />
+    )}
+    {/* Logbook */}
 
     </div>
+
   );
 }
 
-export default App;
+export default NetworkSimulator;
