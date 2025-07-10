@@ -1,12 +1,12 @@
 import { createSignal } from "solid-js";
 
-const SelectPrinterDialog = ({selectedComputer, availablePrinters, selectedPrinter, setSelectedPrinter, onConfirm, onClose }) => {
+const SelectPrinterDialog = ({selectedComputer, availablePrinters, selectedPrinter, setSelectedPrinter, onConfirm, onClose,scaleX,scaleY }) => {
   
 
   return (
     <div
       class="select-printer-dialog absolute top-40 left-0 m-4 bg-gray-800 text-white p-6 rounded-lg shadow-lg"
-      style={{ top: `${selectedComputer.position[1]-300}px`, left: `${selectedComputer.position[0]-100}px` }}
+      style={{ top: `${(selectedComputer.position[1]-300)*scaleY}px`, left: `${(selectedComputer.position[0]-100)*scaleX}px` }}
       onClick={(e) => e.stopPropagation()}
     >
       <h2 class="text-lg font-bold mb-4">Select a Printer</h2>

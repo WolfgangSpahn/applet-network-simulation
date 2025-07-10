@@ -1,6 +1,18 @@
+// Get node by ID
+export function getNode(data, id) {
+  const node = data.find(n => n.id === id);
+  if (!node) {
+    console.error(`Node with ID ${id} not found.`);
+    return null;
+  }
+  return node;
+}
+
+
+
 // Define Nodes (with id, position, and type ["printer", "tv", "cloud", "mobile", "computer", "switch", "router", "source", "destination"])
 export const nodes_data = [
-    { id: 0, color:"red", position: [370, 320], type: "cloud"    , role: "leaf",        mac: "b2:77:3a:8c:14:5f", subnet: "213.3"    , name: "Swisscom"  },
+    { id: 0, color:"red", position: [370, 320], type: "cloud"    , role: "leaf",        mac: "b3:75:3c:8d:13:8f", subnet: "213.3"    , name: "Swisscom"  },
     { id: 1, color:"white", position: [250, 250], type: "Switch"   , role: "transit",     mac: "1c:4f:9b:2d:63:e1", subnet: "192.168.1", name: "WLAN-B" , forwarding:"clientIsolation" },
     { id: 4, color:"blue", position: [100, 400], type: "computer" , role: "source",      mac: "03:aa:66:de:9e:21", subnet: "192.168.1", name: "My Laptop" },
     { id: 13, color:"green", position: [100, 100], type: "printer"  , role: "destination", mac: "fe:08:d8:75:82:a0", ip: "10.0.0.4", name: "HPP 1000" },

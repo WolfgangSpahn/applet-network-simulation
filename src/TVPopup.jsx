@@ -1,11 +1,11 @@
 import { on } from "solid-js";
 
-const TVPopup = ({ selectedDevice, onClose, onPing }) => {
+const TVPopup = ({ selectedDevice, onClose, onPing, scaleX, scaleY }) => {
     return (
       console.log("Selected computer:",selectedDevice),
       <div
         class="popup absolute bg-gray-800 text-white text-xs border border-white p-2 rounded shadow-lg"
-        style={{ top: `${selectedDevice.position[1]}px`, left: `${selectedDevice.position[0]}px` }}
+        style={{ top: `${selectedDevice.position[1]*scaleY}px`, left: `${selectedDevice.position[0]*scaleX}px` }}
         onClick={(e) => e.stopPropagation()}
       >
 

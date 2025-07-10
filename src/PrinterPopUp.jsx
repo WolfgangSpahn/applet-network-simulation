@@ -1,11 +1,11 @@
 import { on } from "solid-js";
 
-const PrinterPopup = ({ selectedPrinter, onClose, onPing, onPreferences }) => {
+const PrinterPopup = ({ selectedPrinter, onClose, onPing, onPreferences,scaleX,scaleY}) => {
     return (
       console.log(selectedPrinter),
       <div
         class="popup absolute bg-gray-800 text-white text-xs border border-white p-2 rounded shadow-lg"
-        style={{ top: `${selectedPrinter.position[1]}px`, left: `${selectedPrinter.position[0]}px` }}
+        style={{ top: `${selectedPrinter.position[1]*scaleY}px`, left: `${selectedPrinter.position[0]*scaleX}px` }}
         onClick={(e) => e.stopPropagation()}
       >
         <button

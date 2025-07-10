@@ -1,6 +1,6 @@
 import { createSignal, onMount, createEffect } from "solid-js";
 
-const ComputerPref = ({ selectedComputer, onClose }) => {
+const ComputerPref = ({ selectedComputer, onClose, scaleX,scaleY }) => {
   const [name, setName] = createSignal(selectedComputer?.name|| "");
   const [macAddress, setMacAddress] = createSignal(selectedComputer?.mac || "");
   const [subnet, setSubnet] = createSignal(selectedComputer?.subnet || "");
@@ -74,7 +74,7 @@ const ComputerPref = ({ selectedComputer, onClose }) => {
             <span class="mb-2">IP-Address:</span>
             <div class="flex items-end space-x-2 w-full">
               <div class="flex flex-col flex-grow">
-                <span class="text-sm mb-1">Subnet</span>
+                <span class="text-sm mb-1">Subnet-Address</span>
                 <input
                   type="text"
                   class="bg-gray-700 text-white p-2 rounded w-full"

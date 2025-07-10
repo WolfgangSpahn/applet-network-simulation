@@ -1,10 +1,10 @@
 import { createSignal } from "solid-js";
 
-const NotifyOnEmilieInfo = ({ selectedComputer, title, message, onClose }) => {
+const NotifyOnEmilieInfo = ({ selectedComputer, title, message, onClose,scaleX,scaleY }) => {
 
   return (
     <div  class="computer-pref p-4 absolute bg-gray-800 rounded text-white"
-          style={{ top: `${200}px`, left: `${200}px` }}
+          style={{ top: `${200*scaleY}px`, left: `${200*scaleX}px` }}
       onClick={(e) => e.stopPropagation()}
     >
       <h2 class="text-lg font-bold mb-4">{title}</h2>

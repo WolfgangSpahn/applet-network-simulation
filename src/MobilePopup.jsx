@@ -1,6 +1,6 @@
 import { on } from "solid-js";
 
-const MobilePopup = ({ selectedDevice, onClose, onPing }) => {
+const MobilePopup = ({ selectedDevice, onClose, onPing, scaleX,scaleY }) => {
     return (
       console.log("Selected computer:",selectedDevice),
       <div

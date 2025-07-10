@@ -34,6 +34,7 @@ module.exports = {
         },
   
         fontSize: {
+          "fluid-4xs": "clamp(0.375rem, 0.6vw, 0.5rem)", // ~6px
           "fluid-3xs": "clamp(0.5rem, 0.8vw, 0.625rem)", // ~8px
           "fluid-2xs": "clamp(0.625rem, 0.8vw, 0.75rem)", // ~10px
           "fluid-xs": "clamp(0.75rem, 1vw, 1rem)",   // ~12px - 16px

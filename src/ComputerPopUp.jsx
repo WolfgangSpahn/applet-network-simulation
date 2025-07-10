@@ -1,11 +1,11 @@
 import { on } from "solid-js";
 
-const ComputerPopup = ({ selectedComputer, onClose, onPing, onPrinterSelect, onPrintTestPage, onPreferences }) => {
+const ComputerPopup = ({ selectedComputer, onClose, onPing, onPrinterSelect, onPrintTestPage, onPreferences,scaleX,scaleY }) => {
     return (
       console.log(selectedComputer),
       <div
         class="popup absolute bg-gray-800 text-white text-xs border border-white p-2 rounded shadow-lg"
-        style={{ top: `${selectedComputer.position[1]}px`, left: `${selectedComputer.position[0]}px` }}
+        style={{ top: `${selectedComputer.position[1]*scaleY}px`, left: `${selectedComputer.position[0]*scaleX}px` }}
         onClick={(e) => e.stopPropagation()}
       >
         <button

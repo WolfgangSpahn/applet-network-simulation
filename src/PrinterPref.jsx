@@ -1,6 +1,6 @@
 import { createSignal, onMount, createEffect } from "solid-js";
 
-const PrinterPref = ({ selectedPrinter,  onSave, onClose }) => {
+const PrinterPref = ({ selectedPrinter,  onSave, onClose,scaleX,scaleY }) => {
   const [name, setName] = createSignal(selectedPrinter?.name || "no printer selected");
   const [ipAddress, setIpAddress] = createSignal(selectedPrinter?.ip || "");
   const [macAddress, setMacAddress] = createSignal(selectedPrinter?.mac || "");
@@ -36,7 +36,7 @@ const PrinterPref = ({ selectedPrinter,  onSave, onClose }) => {
   return (
     <div
       class="printer-pref absolute top-10 left-0 m-4 bg-gray-900 text-white"
-      style={{ top: `${selectedPrinter.position[1]}px`, left: `${selectedPrinter.position[0] - 100}px` }}
+      style={{ top: `${selectedPrinter.position[1]*scaleY}px`, left: `${(selectedPrinter.position[0] - 100)*scaleX}px` }}
       onClick={(e) => e.stopPropagation()}
     >
       <div class="bg-gray-800 rounded-lg p-6">

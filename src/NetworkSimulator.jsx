@@ -22,7 +22,7 @@ import TooltipSVG from "./TooltipSVG";
 import { forwardingTable, setForwardingTable } from "./FWDTableStore";
 import { _ , state } from "./multilang";
 // import data
-import { nodes_data, edges } from "./data.js";
+import { nodes_data, edges, getNode } from "./data.js";
 
 
 
@@ -50,6 +50,27 @@ function getValidThreads(currentNodes, nextNodes, threadIndex) {
   return validThreads;
 }
 
+// get host id (last int) from ip string
+function getHostId(ip) {
+    if (typeof ip !== 'string') {
+      console.error("Invalid input: IP must be a string.");
+      return null;
+    }
+  
+    const parts = ip.trim().split('.');
+    if (parts.length !== 4) {
+      console.error("Invalid IP format: Must contain four octets.");
+      return null;
+    }
+  
+    const hostId = parseInt(parts[3], 10);
+    if (isNaN(hostId)) {
+      console.error("Invalid host ID: Last segment is not a number.");
+      return null;
+    }
+  
+    return hostId;
+  }
 
 let pathRefs = []; // Store path references globally
 
@@ -125,31 +146,28 @@ export const NetworkSimulator = (props) => {
     thread = JSON.parse(JSON.stringify(unicastThread));
     thread[0] = node.id;
     // get last nodes id in thread
-    let lastNodeIds = thread[thread.length - 1];
-    // lasst node can be a number: if number convert it to array
-    lastNodeIds = Array.isArray(lastNodeIds) ? lastNodeIds : [lastNodeIds];
-    // get the last nodes
-    let lastNodes = lastNodeIds.map(id => getNodeById(id));
+    // let lastNodeIds = thread[thread.length - 1];
+    // console.log("lastNodeIds:", lastNodeIds);
+    // // lasst node can be a number: if number convert it to array
+    // lastNodeIds = Array.isArray(lastNodeIds) ? lastNodeIds : [lastNodeIds];
+    // // get the last nodes
+    // let lastNodes = lastNodeIds.map(id => getNodeById(id));
+    // console.log("lastNodes:", lastNodes);
 
-    // update forwarding table entry for the selected computer [{ destinationMac: "b2:77:3a:8c:14:5f", port: "to 255" }]
-    // add forwarding table entry for each last node
-    lastNodes.forEach(node => {
-      // check if node.mac is not already in the forwarding table
-      let entry = forwardingTable.find(entry => entry.destinationMac === node.mac);
-      if (entry) {
-        console.log("entry found:", entry);
-        // update entry
-        // entry.port = `to ${node.id === 0? 255 : node.id}`;
-      } else {
-        console.log("entry not found:", node.mac);
-        // entry
-        setForwardingTable(prev => [
-          ...prev,
-          { destinationMac: node.mac, port: `to ${node.id === 0? 255 : node.id}` }
-        ]);
-        setLogBook(prev => `${prev}[Forwarding table entry added for ${node.mac} to ${node.id}]`);
-      }
-    });
+
+    // --- added to show multicast behaviour
+    // filter out selectedComputer().id from allowPorts to get targets
+    let targets = allowedPorts().filter(id => id !== node.id);
+    thread[thread.length - 1] = targets;
+    console.log("thread:", thread);
+    // ---  
+    
+    let targetNodes = thread[thread.length - 1].map(id => getNodeById(id));
+    console.log("targetNodes:", targetNodes);
+    // Update forwarding table entries for the last nodes
+    updateForwardingTable(node,targetNodes,setLogBook);
+   
+    
     // set forwarding table entry for the selected computer
     console.log("fwding table:", node.id, forwardingTable);
     setSourceColor(node.color); // Update source color based on node ID
@@ -220,10 +238,10 @@ export const NetworkSimulator = (props) => {
     console.log("handlePrintTestPage: computer:",computer);
     console.log("handlePrintTestPage: printer:",printer);  
     // check of print is available in availablePrinters
-    if (availablePrinters().some(p => p.id === printer.id)) {
+    if (availablePrinters().some(p => p.id === printer.id) && (selectedPrinter() === printer.id)) {
       console.log("handlePrintTestPage: Printer available");
       // check if printer ip is in the subnet of the computer
-      if (printer && printer.ip.startsWith(computer.subnet)&&!printer.ip.endsWith(computer.id)&&selectedPrinter()===printer.id) {
+      if (printer && printer.ip.startsWith(computer.subnet) && getHostId(printer.ip)==13) {
         // alert(`Print test page to ${printer.name}`);
         setMessage(`Print test page to ${printer.name}`);
         setLogBook(prev => `${prev}[Print test page to ${printer.name}]`);
@@ -255,10 +273,21 @@ export const NetworkSimulator = (props) => {
   createEffect(() => {
     console.log("broadcast has changed:", discoveredPrinter());
     // if 13 is in allowedPorts
-    if (allowedPorts().includes(13)) {
-    // if discoveredPrinter is true, set availablePrinters to [{ id: 1, name: "HPP 1000" }]
+    let printer = nodes.find(n => n.type === "printer");
+    let computer = nodes.find(n => n.type === "computer");
+    // if port 13 and 4 are allowed port and printer IP is in computer subnet and printer IP ends on printer id
+    if (allowedPorts().includes(13)
+        && (allowedPorts().includes(4))
+        && (printer.ip == `${computer.subnet}.${printer.id}`)) {    
+      // if discoveredPrinter is true, set availablePrinters to [{ id: 1, name: "HPP 1000" }]
       setAvailablePrinters([{ id: 13, name: "HPP 1000" }]);
-      setLogBook(prev => `${prev}[switch port to Printer ${13} is open]`);
+      setLogBook(prev => `${prev}[Computer and Printer can communicate. Printer is available.]`);
+      // -------------------- fix --------------------
+      props.onSubmit({
+        preventDefault: () => {},
+        target: { value: "C-P" }
+      });
+      // ---------------------------------------------
     } else {
       setAvailablePrinters([]);
     }
@@ -474,7 +503,8 @@ export const NetworkSimulator = (props) => {
       })}
       {/* draw text to top left of the viewport */}
       <text x={10} y={30} fill="white" fontSize="16" fontWeight="bold">
-        NetworkSim Version 0.8 -- <tspan style="font-size: 18px; font-weight: bold;">Subnet: {"192.168.1"}</tspan>
+        {/* Version 0.9 */}
+        <tspan style="font-size: 18px; font-weight: bold;">Subnet Address: {"192.168.1"}</tspan>
       </text>
       {nodes.map((node) => (
         <g>
@@ -589,13 +619,18 @@ export const NetworkSimulator = (props) => {
       <TooltipSVG /> 
     </svg>
 
+    {/* ================================ Popups  ======================================= */}
+
     {/* Display the SwitchPref component when a Switch is selected */}
     {clickedSwitch() && showSwitchPref() &&(
       <SwitchPref selectedSwitch={clickedSwitch()}
         allowedPorts={allowedPorts}
         setAllowedPorts={setAllowedPorts}
         setShowEmilieNotification={setShowEmilieNotification}
-        onClose ={() => setShowSwitchPref(false)} />
+        onClose ={() => setShowSwitchPref(false)}
+        scaleX={scaleX()}
+        scaleY={scaleY()}
+        />
     )}
     {/* Display the ComputerPref component when a computer is selected */}
     {clickedComputer() && showComputerPref() &&(
@@ -616,6 +651,8 @@ export const NetworkSimulator = (props) => {
           setLogBook(prev => `${prev}[Printer ${printerId} selected]`);
         }}
         onClose={() => setShowPrinterSelect(false)}
+        scaleX={scaleX()}
+        scaleY={scaleY()}
       />
     )}
     {/* Display the PrinterPref component when a printer is selected  */}
@@ -624,6 +661,8 @@ export const NetworkSimulator = (props) => {
         selectedPrinter={clickedPrinter()}
         onSave={handlePrinterIpChange}
         onClose={() => setClickedPrinter(null)}
+        scaleX={scaleX()}
+        scaleY={scaleY()}
       />
     )}
     {clickedTV() && showTVPopup() && (
@@ -631,18 +670,25 @@ export const NetworkSimulator = (props) => {
         selectedDevice={clickedTV()}
         onClose={() => setShowTVPopup(false)}
         onPing={(node) => {
+          // Reuse handleDeviceClick for consistent behavior
           handleDeviceClick(node);
         }}
-        /> 
+        scaleX={scaleX()}
+        scaleY={scaleY()}
+      /> 
     )}
+
     {clickedMobile() && showMobilePopup() && (
       <TVPopup
         selectedDevice={clickedMobile()}
         onClose={() => setShowMobilePopup(false)}
         onPing={(node) => {
+          // Reuse handleDeviceClick for consistent behavior
           handleDeviceClick(node);
         }}
-        />
+        scaleX={scaleX()}
+        scaleY={scaleY()}
+      />
     )}
       
     {/* Pop-up menu for computer options */}
@@ -651,35 +697,14 @@ export const NetworkSimulator = (props) => {
         selectedComputer={clickedComputer()}
         onClose={() => setShowPopUp(false)}
         onPing={() => {
-          console.log("Ping:", clickedComputer().id);
-          thread[0] = clickedComputer().id;
-          // filter out selectedComputer().id from allowPorts to get targets
-          let targets = allowedPorts().filter(id => id !== clickedComputer().id);
-          thread[thread.length - 1] = targets;
-          console.log("thread:", thread);
-          // update forwarding table entry for all ids in targets with mac and port
-          targets.forEach(id => {
-            let entry = forwardingTable.find(entry => entry.destinationMac === getNodeById(id).mac);
-            if (entry) {
-              console.log("entry found:", entry);
-            } else {
-              console.log("entry not found:", id);
-              // entry
-              setForwardingTable(prev => [
-                ...prev,
-                { destinationMac: getNodeById(id).mac, port: `to ${id}` }
-              ]);
-            }
-          });
-
-          setSourceColor(clickedComputer().color); // Update source color based on node ID
-          setTargetColor("gray"); // Update target color to green
-          redoAnimation();
-          }}
-        
+          // Reuse handleDeviceClick for consistent behavior
+          handleDeviceClick(clickedComputer());
+        }}
         onPrinterSelect={handlePrinterSelect}
         onPrintTestPage={handlePrintTestPage}
         onPreferences={handleComputerPreferences}
+        scaleX={scaleX()}
+        scaleY={scaleY()}
       />
     )}
     {/* Notification for printing test page */}
@@ -690,6 +715,8 @@ export const NetworkSimulator = (props) => {
         message={message}
         success={success}
         onClose={() => setShowNotification(false)}
+        scaleX={scaleX()}
+        scaleY={scaleY()}
       />
     )}
     {/* Notification for Emilie Info */}
@@ -699,6 +726,8 @@ export const NetworkSimulator = (props) => {
         title="Alert"
         message={"Please inform Emilie!"}
         onClose={() => setShowEmilieNotification(false)}
+        scaleX={scaleX()}
+        scaleY={scaleY()}
       />
     )}
     {/* Logbook */}
@@ -707,5 +736,35 @@ export const NetworkSimulator = (props) => {
 
   );
 }
+
+
+const updateForwardingTable = ( srcNode, targetNodes, setLogBook) => {
+  // nodes hold the destination nodes which give the ports
+  // srcNode holds the source node which is used to update the forwarding table
+  console.log("Updating forwarding table for source node:", srcNode);
+  console.log("Target nodes number:", targetNodes.length);
+  let intermediate_table = [{ destinationMac: srcNode.mac, port: srcNode.id }];
+  // add target nodes to the intermediate table, for printer check if IP is subnet of source node . printer id
+
+  targetNodes.forEach(target => {
+      intermediate_table.push({ destinationMac: target.mac, port: target.id, ip: target.ip? target.ip : undefined});
+  });
+
+  // allow undefined ip in the intermediate table and ip === "192.168.1.13" TODO: Needs to be changed to a more generic solution
+  intermediate_table = intermediate_table.filter(entry => entry.ip === undefined || entry.ip === "192.168.1.13");
+
+  console.log("Intermediate forwarding table:", intermediate_table);
+
+  //update the forwarding table, by entries in intermediate_table which are not already in the forwarding table
+  intermediate_table.forEach(entry => {
+    const existingEntry = forwardingTable.find(fwd => fwd.destinationMac === entry.destinationMac);
+    if (existingEntry) {
+      // nothing to do, entry already exists
+    } else {
+      // Add new entry
+      setForwardingTable([...forwardingTable, entry]);
+    }
+  });
+};
 
 export default NetworkSimulator;
