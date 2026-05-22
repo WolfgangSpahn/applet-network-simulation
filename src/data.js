@@ -10,6 +10,8 @@ export function getNode(data, id) {
 
 
 
+
+
 // Define Nodes (with id, position, and type ["printer", "tv", "cloud", "mobile", "computer", "switch", "router", "source", "destination"])
 export const nodes_data = [
     { id: 0, color:"red", position: [370, 320], type: "cloud"    , role: "leaf",        mac: "b3:75:3c:8d:13:8f", subnet: "213.3"    , name: "Swisscom"  },
@@ -30,3 +32,8 @@ export const edges = [
     { id: 5, nodes: [1, 61], type: "wireless"  },
     { id: 6, nodes: [1, 76], type: "wireless"  }
   ];
+
+export const network = {
+  nodes: nodes_data,
+  edges: edges
+};

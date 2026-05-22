@@ -26,10 +26,10 @@ function Rt(e, t, l) {
       const h = f.get(t[s]);
       if (h != null)
         if (o < h && h < n) {
-          let m = s, $ = 1, u;
-          for (; ++m < i && m < n && !((u = f.get(t[m])) == null || u !== h + $); )
-            $++;
-          if ($ > h - o) {
+          let m = s, v = 1, u;
+          for (; ++m < i && m < n && !((u = f.get(t[m])) == null || u !== h + v); )
+            v++;
+          if (v > h - o) {
             const b = t[s];
             for (; o < h; ) e.insertBefore(l[o++], b);
           } else e.replaceChild(l[o++], t[s++]);
@@ -66,7 +66,7 @@ function U(e, t, l, r) {
 function Yt(e, t, l) {
   return st(() => e(t, l));
 }
-function v(e, t, l, r) {
+function $(e, t, l, r) {
   if (l !== void 0 && !r && (r = []), typeof t != "function") return Ce(e, t, r, l);
   y((i) => Ce(e, t(), i, l), r);
 }
@@ -329,26 +329,26 @@ function Ut(e, t) {
     Te(e, "length", r);
   } else ft(e, t);
 }
-function $e(e, t, l = []) {
+function ve(e, t, l = []) {
   let r, i = e;
   if (t.length > 1) {
     r = t.shift();
     const s = typeof r, o = Array.isArray(e);
     if (Array.isArray(r)) {
       for (let a = 0; a < r.length; a++)
-        $e(e, [r[a]].concat(t), l);
+        ve(e, [r[a]].concat(t), l);
       return;
     } else if (o && s === "function") {
       for (let a = 0; a < e.length; a++)
-        r(e[a], a) && $e(e, [a].concat(t), l);
+        r(e[a], a) && ve(e, [a].concat(t), l);
       return;
     } else if (o && s === "object") {
       const { from: a = 0, to: f = e.length - 1, by: h = 1 } = r;
       for (let m = a; m <= f; m += h)
-        $e(e, [m].concat(t), l);
+        ve(e, [m].concat(t), l);
       return;
     } else if (t.length > 1) {
-      $e(e[r], t, [r].concat(l));
+      ve(e[r], t, [r].concat(l));
       return;
     }
     i = e[r], l = [r].concat(l);
@@ -360,7 +360,7 @@ function ut(...[e, t]) {
   const l = me(e || {}), r = Array.isArray(l), i = ct(l);
   function n(...s) {
     zt(() => {
-      r && s.length === 1 ? Ut(l, s[0]) : $e(l, s);
+      r && s.length === 1 ? Ut(l, s[0]) : ve(l, s);
     });
   }
   return [i, n];
@@ -390,7 +390,7 @@ function qe(e) {
   };
   return (() => {
     var r = Kt();
-    return r.addEventListener("mouseleave", l), r.addEventListener("mouseenter", t), v(r, () => e.children), r;
+    return r.addEventListener("mouseleave", l), r.addEventListener("mouseenter", t), $(r, () => e.children), r;
   })();
 }
 var Qt = /* @__PURE__ */ w('<svg><g><path fill=#1a202c stroke=#ffffff stroke-width=3 stroke-linejoin=round stroke-linecap=butt d="m 1.5,9.636646 v 0 C 1.5,5.1429007 5.1429005,1.5 9.636646,1.5 H 42.74918 v 0 c 2.157974,0 4.227562,0.8572514 5.753479,2.3831685 1.525917,1.5259168 2.383167,3.5955045 2.383167,5.753477 V 42.18225 c 0,4.493748 -3.642898,8.136646 -8.136646,8.136646 H 9.6366463 c -4.4937453,0 -8.136646,-3.642899 -8.136646,-8.136646 z"fill-rule=evenodd id=path2></path><path fill=#ffffff stroke=none stroke-width=1.87726 stroke-linejoin=round stroke-linecap=butt d="M 27.467192,9.3368497 H 38.081364 V 6.6590449 l 6.078743,5.3556111 -6.078743,5.355609 V 14.692459 H 27.467192 Z"fill-rule=evenodd id=path3></path><path fill=#ffffff stroke=none stroke-width=1.87726 stroke-linejoin=round stroke-linecap=butt d="m 28.351706,29.007584 h 10.614172 v -2.677807 l 6.078743,5.35561 -6.078743,5.355608 v -2.6778 H 28.351706 Z"fill-rule=evenodd id=path4></path><path fill=#ffffff stroke=none stroke-width=1.87726 stroke-linejoin=round stroke-linecap=butt d="M 23.860893,19.267895 H 13.246719 v -2.677807 l -6.07874,5.355612 6.07874,5.355609 v -2.677806 h 10.614174 z"fill-rule=evenodd id=path5></path><path fill=#ffffff stroke=none stroke-width=1.87726 stroke-linejoin=round stroke-linecap=butt d="M 23.860893,36.9079 H 13.246719 v -2.677804 l -6.07874,5.355609 6.07874,5.355609 v -2.677808 h 10.614174 z"fill-rule=evenodd id=path6></path><path fill=lightblue transform=translate(8,5) d="M9.12 8c0 .49-.4.89-.89.89s-.89-.4-.89-.89.4-.89.89-.89.89.4.89.89zm-3.2-2.42.84.84c.38-.38.89-.62 1.46-.62s1.08.24 1.46.62l.84-.84c-.59-.59-1.41-.96-2.3-.96s-1.71.37-2.3.96zm-1.67-1.67.84.84c.81-.81 1.92-1.31 3.16-1.31 1.24 0 2.35.5 3.16 1.31l.84-.84c-1.08-1.08-2.58-1.75-4.25-1.75s-3.17.67-4.25 1.75zm4.25-4.25c-2.62 0-5 1.06-6.72 2.79l.84.84c1.46-1.46 3.48-2.37 5.72-2.37s4.26.91 5.72 2.37l.84-.84c-1.72-1.73-4.1-2.79-6.72-2.79z"fill-rule=evenodd></path><text x=37 y=43.5 fill=white stroke=white stroke-width=0.4 font-size=5 text-anchor=middle>DHCP</svg>', !1, !0);
@@ -485,7 +485,7 @@ const gl = [], [xe, gt] = ut(gl), ht = [
   { id: 5, nodes: [1, 61], type: "wireless" },
   { id: 6, nodes: [1, 76], type: "wireless" }
 ];
-var hl = /* @__PURE__ */ w('<div class="switch-pref absolute top-0 right-0 m-4 bg-gray-900 text-white text-fluid-xs p-4 rounded shadow-lg"><h2 class="text-white text-fluid-lg font-medium mx-2 mb-1">Switch Settings</h2><div class="bg-gray-800 rounded-lg p-6"><div class="flex flex-col space-y-4"><div class="flex flex-col"><span class="text-fluid-xs mb-2 font-bold text-prophy-orange">Name:</span><input type=text class="bg-gray-700 text-white text-fluid-xs p-2 rounded w-full"title="Enter the name of the switch"></div><div class="flex flex-col"><span class="text-fluid-xs mb-2 font-bold text-prophy-orange">Allowed Ports:</span><div class="grid grid-cols-4 gap-2"></div></div><div class="flex flex-col"><span class="text-fluid-xs mb-2 font-bold text-prophy-orange">Forwarding Table:</span><div><div class="grid grid-cols-4 gap-2 mb-1"style="grid-template-columns:3fr 1fr 3fr 1fr;"><div class="text-fluid-2xs font-medium text-gray-300">Target MAC Adr.</div><div class="text-fluid-2xs font-medium text-gray-300 text-center">Port to</div><div class="text-fluid-2xs font-medium text-gray-300">Target MAC Adr.</div><div class="text-fluid-2xs font-medium text-gray-300 text-center">Port to</div></div><div class="grid grid-cols-4 gap-2"style="grid-template-columns:3fr 1fr 3fr 1fr;">'), pl = /* @__PURE__ */ w('<label class="flex items-center space-x-2 text-fluid-xs"><input type=checkbox name=allowedPorts class="form-checkbox text-blue-500"><span>'), rt = /* @__PURE__ */ w("<div>"), vl = /* @__PURE__ */ w('<div class="text-gray-400 text-fluid-xs italic col-span-4">No entries'), $l = /* @__PURE__ */ w('<button class="bg-green-500 hover:bg-green-600 text-white text-fluid-xs p-2 rounded">Save'), ml = /* @__PURE__ */ w('<div class="text-red-500 text-fluid-xs mt-4">');
+var hl = /* @__PURE__ */ w('<div class="switch-pref absolute top-0 right-0 m-4 bg-gray-900 text-white text-fluid-xs p-4 rounded shadow-lg"><h2 class="text-white text-fluid-lg font-medium mx-2 mb-1">Switch Settings</h2><div class="bg-gray-800 rounded-lg p-6"><div class="flex flex-col space-y-4"><div class="flex flex-col"><span class="text-fluid-xs mb-2 font-bold text-prophy-orange">Name:</span><input type=text class="bg-gray-700 text-white text-fluid-xs p-2 rounded w-full"title="Enter the name of the switch"></div><div class="flex flex-col"><span class="text-fluid-xs mb-2 font-bold text-prophy-orange">Allowed Ports:</span><div class="grid grid-cols-4 gap-2"></div></div><div class="flex flex-col"><span class="text-fluid-xs mb-2 font-bold text-prophy-orange">Forwarding Table:</span><div><div class="grid grid-cols-4 gap-2 mb-1"style="grid-template-columns:3fr 1fr 3fr 1fr;"><div class="text-fluid-2xs font-medium text-gray-300">Target MAC Adr.</div><div class="text-fluid-2xs font-medium text-gray-300 text-center">Port to</div><div class="text-fluid-2xs font-medium text-gray-300">Target MAC Adr.</div><div class="text-fluid-2xs font-medium text-gray-300 text-center">Port to</div></div><div class="grid grid-cols-4 gap-2"style="grid-template-columns:3fr 1fr 3fr 1fr;">'), pl = /* @__PURE__ */ w('<label class="flex items-center space-x-2 text-fluid-xs"><input type=checkbox name=allowedPorts class="form-checkbox text-blue-500"><span>'), rt = /* @__PURE__ */ w("<div>"), $l = /* @__PURE__ */ w('<div class="text-gray-400 text-fluid-xs italic col-span-4">No entries'), vl = /* @__PURE__ */ w('<button class="bg-green-500 hover:bg-green-600 text-white text-fluid-xs p-2 rounded">Save'), ml = /* @__PURE__ */ w('<div class="text-red-500 text-fluid-xs mt-4">');
 const bl = ({
   selectedSwitch: e,
   allowedPorts: t,
@@ -495,12 +495,12 @@ const bl = ({
   scaleX: n,
   scaleY: s
 }) => {
-  const [o, a] = p(e?.forwarding || "clientIsolation"), [f, h] = p(e?.name || "no switch selected"), [m, $] = p(""), u = () => {
+  const [o, a] = p(e?.forwarding || "clientIsolation"), [f, h] = p(e?.name || "no switch selected"), [m, v] = p(""), u = () => {
     if (!f()) {
-      $("Name is required.");
+      v("Name is required.");
       return;
     }
-    $("");
+    v("");
   };
   return We(() => {
     console.log("Allowed ports:", t());
@@ -508,7 +508,7 @@ const bl = ({
     var b = hl(), P = b.firstChild, D = P.nextSibling, z = D.firstChild, J = z.firstChild, te = J.firstChild, Z = te.nextSibling, j = J.nextSibling, K = j.firstChild, q = K.nextSibling, oe = j.nextSibling, le = oe.firstChild, ne = le.nextSibling, A = ne.firstChild, H = A.nextSibling;
     return b.$$click = (k) => k.stopPropagation(), Z.$$input = (k) => {
       h(k.target.value), u();
-    }, v(q, E(lt, {
+    }, $(q, E(lt, {
       get each() {
         return ht.filter((k, N) => N !== 0 && N !== 1).map((k) => k.id);
       },
@@ -523,33 +523,33 @@ const bl = ({
               return C.filter((B) => B !== k);
             return C;
           }), gt((C) => C.filter((B) => B.port !== k));
-        }), F.value = k, v(ce, `to ${k}`), y(() => F.checked = t().includes(k)), N;
+        }), F.value = k, $(ce, `to ${k}`), y(() => F.checked = t().includes(k)), N;
       })()
-    })), v(H, E(lt, {
+    })), $(H, E(lt, {
       each: xe,
       children: (k, N) => [(() => {
         var F = rt();
-        return v(F, () => k.destinationMac || "—"), y(() => _e(F, `bg-gray-700 text-white text-fluid-2xs p-1 rounded overflow-hidden ${N() % 2 === 1 ? "col-start-3" : ""}`)), F;
+        return $(F, () => k.destinationMac || "—"), y(() => _e(F, `bg-gray-700 text-white text-fluid-2xs p-1 rounded overflow-hidden ${N() % 2 === 1 ? "col-start-3" : ""}`)), F;
       })(), (() => {
         var F = rt();
-        return v(F, () => `${k.port}` || "—"), y(() => _e(F, `bg-gray-700 text-white text-fluid-2xs p-1 rounded text-center ${N() % 2 === 1 ? "col-start-4" : ""}`)), F;
+        return $(F, () => `${k.port}` || "—"), y(() => _e(F, `bg-gray-700 text-white text-fluid-2xs p-1 rounded text-center ${N() % 2 === 1 ? "col-start-4" : ""}`)), F;
       })()]
-    }), null), v(H, (() => {
+    }), null), $(H, (() => {
       var k = X(() => xe.length === 0);
-      return () => k() && vl();
-    })(), null), v(z, (() => {
+      return () => k() && $l();
+    })(), null), $(z, (() => {
       var k = X(() => !!(f() && !m()));
       return () => k() && (() => {
-        var N = $l();
+        var N = vl();
         return N.$$click = () => {
           console.log("Save computer preferences"), r(!0), i();
         }, N;
       })();
-    })(), null), v(z, (() => {
+    })(), null), $(z, (() => {
       var k = X(() => !!m());
       return () => k() && (() => {
         var N = ml();
-        return v(N, m), N;
+        return $(N, m), N;
       })();
     })(), null), y(() => Z.value = f()), b;
   })();
@@ -562,7 +562,7 @@ const Pl = ({
   scaleX: l,
   scaleY: r
 }) => {
-  const [i, n] = p(e?.name || ""), [s, o] = p(e?.mac || ""), [a, f] = p(e?.subnet || ""), [h, m] = p(e?.id || ""), [$, u] = p(""), b = () => {
+  const [i, n] = p(e?.name || ""), [s, o] = p(e?.mac || ""), [a, f] = p(e?.subnet || ""), [h, m] = p(e?.id || ""), [v, u] = p(""), b = () => {
     if (!i()) {
       u("Name is required.");
       return;
@@ -593,19 +593,19 @@ const Pl = ({
       f(C.target.value), b();
     }, de.$$input = (C) => {
       m(C.target.value), b();
-    }, v(z, (() => {
-      var C = X(() => !!(i() && s() && a() && h() && !$()));
+    }, $(z, (() => {
+      var C = X(() => !!(i() && s() && a() && h() && !v()));
       return () => C() && (() => {
         var B = yl();
         return B.$$click = () => {
           console.log("Save computer preferences"), t();
         }, B;
       })();
-    })(), null), v(z, (() => {
-      var C = X(() => !!$());
+    })(), null), $(z, (() => {
+      var C = X(() => !!v());
       return () => C() && (() => {
         var B = wl();
-        return v(B, $), B;
+        return $(B, v), B;
       })();
     })(), null), y((C) => {
       var B = `${e.position[1] - 300}px`, se = `${e.position[0] - 100}px`;
@@ -649,14 +649,14 @@ const Cl = ({
   scaleX: s,
   scaleY: o
 }) => (console.log(e), (() => {
-  var a = _l(), f = a.firstChild, h = f.nextSibling, m = h.nextSibling, $ = m.nextSibling;
+  var a = _l(), f = a.firstChild, h = f.nextSibling, m = h.nextSibling, v = m.nextSibling;
   return a.$$click = (u) => u.stopPropagation(), f.$$click = () => {
     n(e), t();
   }, h.$$click = () => {
     l(e), t();
   }, m.$$click = () => {
     l(e), r(e), t();
-  }, $.$$click = () => {
+  }, v.$$click = () => {
     i(e), t();
   }, y((u) => {
     var b = `${e.position[1] * o}px`, P = `${e.position[0] * s}px`;
@@ -675,7 +675,7 @@ const Xl = ({
   scaleX: r,
   scaleY: i
 }) => {
-  const [n, s] = p(e?.name || "no printer selected"), [o, a] = p(e?.ip || ""), [f, h] = p(e?.mac || ""), [m, $] = p(""), u = () => {
+  const [n, s] = p(e?.name || "no printer selected"), [o, a] = p(e?.ip || ""), [f, h] = p(e?.mac || ""), [m, v] = p(""), u = () => {
     e.id;
   };
   We(() => {
@@ -683,14 +683,14 @@ const Xl = ({
   });
   const b = () => {
     if (!n()) {
-      $("Name is required.");
+      v("Name is required.");
       return;
     }
     if (!/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(o())) {
-      $("Invalid IP-Address format.");
+      v("Invalid IP-Address format.");
       return;
     }
-    $("");
+    v("");
   };
   return Ee(() => {
     console.log("PrinterPref component mounted");
@@ -702,7 +702,7 @@ const Xl = ({
       h(A.target.value), b();
     }, ne.$$input = (A) => {
       a(A.target.value), b();
-    }, v(z, (() => {
+    }, $(z, (() => {
       var A = X(() => !!(n() && o() && !m()));
       return () => A() && (() => {
         var H = Al();
@@ -713,11 +713,11 @@ const Xl = ({
           }), l();
         }, H;
       })();
-    })(), null), v(z, (() => {
+    })(), null), $(z, (() => {
       var A = X(() => !!m());
       return () => A() && (() => {
         var H = Tl();
-        return v(H, m), H;
+        return $(H, m), H;
       })();
     })(), null), y((A) => {
       var H = `${e.position[1] * i}px`, k = `${(e.position[0] - 100) * r}px`;
@@ -739,8 +739,8 @@ const Ml = ({
   scaleX: n,
   scaleY: s
 }) => (() => {
-  var o = El(), a = o.firstChild, f = a.nextSibling, h = f.firstChild, m = h.nextSibling, $ = m.firstChild;
-  return o.$$click = (u) => u.stopPropagation(), v(a, t), v(h, l), U($, "click", i), y((u) => {
+  var o = El(), a = o.firstChild, f = a.nextSibling, h = f.firstChild, m = h.nextSibling, v = m.firstChild;
+  return o.$$click = (u) => u.stopPropagation(), $(a, t), $(h, l), U(v, "click", i), y((u) => {
     var b = `computer-pref absolute p-4 ${r() ? "bg-green-900" : "bg-red-900"} text-white rounded shadow-lg`, P = `${(e.position[1] - 300) * s}px`, D = `${e.position[0] * n}px`;
     return b !== u.e && _e(o, u.e = b), P !== u.t && ((u.t = P) != null ? o.style.setProperty("top", P) : o.style.removeProperty("top")), D !== u.a && ((u.a = D) != null ? o.style.setProperty("left", D) : o.style.removeProperty("left")), u;
   }, {
@@ -760,7 +760,7 @@ const Hl = ({
   scaleY: n
 }) => (() => {
   var s = Nl(), o = s.firstChild, a = o.nextSibling, f = a.firstChild, h = f.nextSibling, m = h.firstChild;
-  return s.$$click = ($) => $.stopPropagation(), `${200 * n}px` != null ? s.style.setProperty("top", `${200 * n}px`) : s.style.removeProperty("top"), `${200 * i}px` != null ? s.style.setProperty("left", `${200 * i}px`) : s.style.removeProperty("left"), v(o, t), v(f, l), U(m, "click", r), s;
+  return s.$$click = (v) => v.stopPropagation(), `${200 * n}px` != null ? s.style.setProperty("top", `${200 * n}px`) : s.style.removeProperty("top"), `${200 * i}px` != null ? s.style.setProperty("left", `${200 * i}px`) : s.style.removeProperty("left"), $(o, t), $(f, l), U(m, "click", r), s;
 })();
 V(["click"]);
 var Il = /* @__PURE__ */ w('<div class="select-printer-dialog absolute top-40 left-0 m-4 bg-gray-800 text-white p-6 rounded-lg shadow-lg"><h2 class="text-lg font-bold mb-4">Select a Printer</h2><div class="flex flex-col space-y-4"></div><div class="flex justify-end space-x-4 mt-6"><button class="bg-gray-700 hover:bg-gray-700 text-white p-2 rounded">Cancel'), Ll = /* @__PURE__ */ w("<div class=text-gray-300>No printers available."), Ol = /* @__PURE__ */ w('<label><div class="flex items-center space-x-3"><input type=radio name=printer class=accent-blue-500><span class=text-white>'), jl = /* @__PURE__ */ w('<button class="bg-green-500 hover:bg-green-600 text-white p-2 rounded">Confirm');
@@ -774,15 +774,15 @@ const Vl = ({
   scaleX: s,
   scaleY: o
 }) => (() => {
-  var a = Il(), f = a.firstChild, h = f.nextSibling, m = h.nextSibling, $ = m.firstChild;
-  return a.$$click = (u) => u.stopPropagation(), v(h, (() => {
+  var a = Il(), f = a.firstChild, h = f.nextSibling, m = h.nextSibling, v = m.firstChild;
+  return a.$$click = (u) => u.stopPropagation(), $(h, (() => {
     var u = X(() => t.length === 0);
     return () => u() && Ll();
-  })(), null), v(h, () => t.map((u) => (() => {
+  })(), null), $(h, () => t.map((u) => (() => {
     var b = Ol(), P = b.firstChild, D = P.firstChild, z = D.nextSibling;
-    return D.addEventListener("change", () => r(u.id)), v(z, () => u.name), y(() => _e(b, `flex items-center justify-between p-3 mb-2 rounded cursor-pointer border 
+    return D.addEventListener("change", () => r(u.id)), $(z, () => u.name), y(() => _e(b, `flex items-center justify-between p-3 mb-2 rounded cursor-pointer border 
                 ${l() === u.id ? "bg-blue-700 border-blue-500" : "bg-gray-800 border-gray-600"}`)), y(() => D.value = u.id), y(() => D.checked = l() === u.id), b;
-  })()), null), U($, "click", n), v(m, (() => {
+  })()), null), U(v, "click", n), $(m, (() => {
     var u = X(() => t.length !== 0);
     return () => u() && (() => {
       var b = jl();
@@ -809,7 +809,7 @@ function Fl() {
       const t = e();
       return (() => {
         var l = Dl(), r = l.firstChild, i = r.nextSibling;
-        return v(i, () => t.text), y((n) => {
+        return $(i, () => t.text), y((n) => {
           var s = `translate(${t.x}, ${t.y - 10})`, o = t.text.length * 7 + 20;
           return s !== n.e && S(l, "transform", n.e = s), o !== n.t && S(r, "width", n.t = o), n;
         }, {
@@ -882,46 +882,40 @@ function Kl(e) {
 let Fe = [];
 const cn = (e) => {
   console.log("NetworkSimulator props:", e.width, e.height);
-  const [t, l] = p(e.width || 500), [r, i] = p(e.height || 500), [n, s] = p(e.width / 500), [o, a] = p(e.height / 500), [f, h] = p(e.height / 500), [m, $] = p("Log:"), [u, b] = p("white"), [P, D] = p("blue"), [z, J] = p(!1), [te, Z] = p(null), [j, K] = p(null), [q, oe] = p(null), [le, ne] = p(null), [A, H] = p(!1), [k, N] = p(!1), [F, ce] = p(!1), [de, C] = p(!1), [B, se] = p(!1), [Me, Ne] = p(null), [en, pt] = p(!1), [vt, ye] = p(!1), [$t, He] = p(!1), [mt, Ie] = p(""), [bt, Ge] = p(!1), [xt, Le] = p(!1), [Oe, Ue] = p([]), [fe, yt] = ut(ht), pe = (d) => fe.find((g) => g.id === d), [we, wt] = p([255]), [Je, Pt] = p(null), kt = (d) => {
+  const [t, l] = p(e.width || 500), [r, i] = p(e.height || 500), [n, s] = p(e.width / 500), [o, a] = p(e.height / 500), [f, h] = p(e.height / 500), [m, v] = p("Log:"), [u, b] = p("white"), [P, D] = p("blue"), [z, J] = p(!1), [te, Z] = p(null), [j, K] = p(null), [q, oe] = p(null), [le, ne] = p(null), [A, H] = p(!1), [k, N] = p(!1), [F, ce] = p(!1), [de, C] = p(!1), [B, se] = p(!1), [Me, Ne] = p(null), [en, pt] = p(!1), [$t, ye] = p(!1), [vt, He] = p(!1), [mt, Ie] = p(""), [bt, Ge] = p(!1), [xt, Le] = p(!1), [Oe, Ue] = p([]), [fe, yt] = ut(ht), pe = (d) => fe.find((g) => g.id === d), [we, wt] = p([255]), [Je, Pt] = p(null), kt = (d) => {
     let g = m();
-    e.onSubmit({
-      preventDefault: () => {
-      },
-      target: {
-        value: g
-      }
-    }), $("");
-  }, ve = (d) => {
-    console.log(`Device ${d.id} clicked! Initiate multicast ping.`), $((I) => `${I}[Device ${d.type} ${d.id} clicked!  Initiate multicast ping.]`), W = JSON.parse(JSON.stringify(Jl)), W[0] = d.id;
+    e.onSubmit(g), v("");
+  }, $e = (d) => {
+    console.log(`Device ${d.id} clicked! Initiate multicast ping.`), v((I) => `${I}[Device ${d.type} ${d.id} clicked!  Initiate multicast ping.]`), W = JSON.parse(JSON.stringify(Jl)), W[0] = d.id;
     let g = we().filter((I) => I !== d.id);
     W[W.length - 1] = g, console.log("thread:", W);
     let x = W[W.length - 1].map((I) => pe(I));
     console.log("targetNodes:", x), Ql(d, x), console.log("fwding table:", d.id, xe), D(d.color), b("white"), Dt();
   }, _t = (d) => {
-    console.log(`Printer ${d.id} clicked!`), $((g) => `${g}[Printer ${d.id} clicked!]`), Ne(d);
+    console.log(`Printer ${d.id} clicked!`), v((g) => `${g}[Printer ${d.id} clicked!]`), Ne(d);
   }, Ct = (d) => {
-    console.log(`=> TV ${d.id} clicked!`), $((g) => `${g}[TV ${d.id} clicked!]`), ce(!0), oe(d);
+    console.log(`=> TV ${d.id} clicked!`), v((g) => `${g}[TV ${d.id} clicked!]`), ce(!0), oe(d);
   }, St = (d) => {
-    console.log(`Mobile ${d.id} clicked!`), $((g) => `${g}[Mobile ${d.id} clicked!]`), C(!0), ne(d);
+    console.log(`Mobile ${d.id} clicked!`), v((g) => `${g}[Mobile ${d.id} clicked!]`), C(!0), ne(d);
   }, At = (d) => {
-    $((g) => `${g}[Switch ${d.id} clicked!]`), H(!0), Z(d);
+    v((g) => `${g}[Switch ${d.id} clicked!]`), H(!0), Z(d);
   }, Tt = (d) => {
-    $((g) => `${g}[Computer ${d.id} clicked!]`), se(!0), K(d);
+    v((g) => `${g}[Computer ${d.id} clicked!]`), se(!0), K(d);
   }, Xt = (d) => {
-    console.log(`Computer ${d.id} preferences clicked!`), $((g) => `${g}[Computer ${d.id} preferences clicked!]`), console.debug(`Preferences for Computer ${d.id}`), N(!0), K(d);
+    console.log(`Computer ${d.id} preferences clicked!`), v((g) => `${g}[Computer ${d.id} preferences clicked!]`), console.debug(`Preferences for Computer ${d.id}`), N(!0), K(d);
   }, Et = (d) => {
     Le(!0);
   }, Mt = (d, g) => {
-    console.log("Printer IP changed:", d, g), $((x) => `${x}[Printer ${d} IP changed to ${g.ip}]`), yt((x) => x.id === d, "ip", g.ip), He(!0);
+    console.log("Printer IP changed:", d, g), v((x) => `${x}[Printer ${d} IP changed to ${g.ip}]`), yt((x) => x.id === d, "ip", g.ip), He(!0);
   }, Nt = (d) => {
     let g = fe.find((x) => x.type === "printer");
-    console.log("handlePrintTestPage: nodes:", fe), console.log("handlePrintTestPage: available:", Oe()), console.log("handlePrintTestPage: computer:", d), console.log("handlePrintTestPage: printer:", g), Oe().some((x) => x.id === g.id) && Je() === g.id ? (console.log("handlePrintTestPage: Printer available"), g && g.ip.startsWith(d.subnet) && Kl(g.ip) == 13 ? (Ie(`Print test page to ${g.name}`), $((x) => `${x}[Print test page to ${g.name}]`), ye(!0), Ge(!0), e.onSubmit({
+    console.log("handlePrintTestPage: nodes:", fe), console.log("handlePrintTestPage: available:", Oe()), console.log("handlePrintTestPage: computer:", d), console.log("handlePrintTestPage: printer:", g), Oe().some((x) => x.id === g.id) && Je() === g.id ? (console.log("handlePrintTestPage: Printer available"), g && g.ip.startsWith(d.subnet) && Kl(g.ip) == 13 ? (Ie(`Print test page to ${g.name}`), v((x) => `${x}[Print test page to ${g.name}]`), ye(!0), Ge(!0), e.onSubmit({
       preventDefault: () => {
       },
       target: {
         value: "Success!! Test page is printed!!!"
       }
-    })) : (Ie(`Could not print test page to ${g.name}`), $((x) => `${x}[Could not print test page to ${g.name}]`), ye(!0), Ge(!1))) : (console.log("handlePrintTestPage: Printer not available"), Ie("Printer not available"), $((x) => `${x}[Printer not available]`), ye(!0));
+    })) : (Ie(`Could not print test page to ${g.name}`), v((x) => `${x}[Could not print test page to ${g.name}]`), ye(!0), Ge(!1))) : (console.log("handlePrintTestPage: Printer not available"), Ie("Printer not available"), v((x) => `${x}[Printer not available]`), ye(!0));
   };
   We(() => {
     console.log("broadcast has changed:", z());
@@ -929,7 +923,7 @@ const cn = (e) => {
     we().includes(13) && we().includes(4) && d.ip == `${g.subnet}.${d.id}` ? (Ue([{
       id: 13,
       name: "HPP 1000"
-    }]), $((x) => `${x}[Computer and Printer can communicate. Printer is available.]`), e.onSubmit({
+    }]), v((x) => `${x}[Computer and Printer can communicate. Printer is available.]`), e.onSubmit({
       preventDefault: () => {
       },
       target: {
@@ -1005,12 +999,12 @@ const cn = (e) => {
     const I = g - 30 - 20;
     return (() => {
       var Y = Yl(), G = Y.firstChild, ie = G.nextSibling;
-      return Y.$$click = kt, S(G, "y", I), S(ie, "y", I + 30 / 2 + 5), v(ie, () => Rl("submit")), Y;
+      return Y.$$click = kt, S(G, "y", I), S(ie, "y", I + 30 / 2 + 5), $(ie, () => Rl("submit")), Y;
     })();
   };
   return (() => {
     var d = Wl(), g = d.firstChild, x = g.firstChild, I = x.nextSibling, Y = I.firstChild, G = Y.firstChild, ie = G.nextSibling;
-    return d.$$click = Ht, v(g, () => ke.map((c, M) => {
+    return d.$$click = Ht, $(g, () => ke.map((c, M) => {
       const T = pe(c.nodes[0]), _ = pe(c.nodes[1]);
       return (() => {
         var L = Zl();
@@ -1023,9 +1017,9 @@ const cn = (e) => {
           a: void 0
         }), L;
       })();
-    }), x), v(g, () => fe.map((c) => (() => {
+    }), x), $(g, () => fe.map((c) => (() => {
       var M = Gl();
-      return v(M, (() => {
+      return $(M, (() => {
         var T = X(() => c.type === "Switch");
         return () => T() ? E(el, {
           get x() {
@@ -1051,7 +1045,7 @@ const cn = (e) => {
             return f();
           },
           onClick: (_) => {
-            _.stopPropagation(), ve(c);
+            _.stopPropagation(), $e(c);
           }
         }) : X(() => c.type === "printer")() ? E(ol, {
           get x() {
@@ -1115,7 +1109,7 @@ const cn = (e) => {
             return 3 * f();
           },
           onClick: (_) => {
-            _.stopPropagation(), ve(c);
+            _.stopPropagation(), $e(c);
           }
         }) : E(il, {
           get x() {
@@ -1134,7 +1128,7 @@ const cn = (e) => {
             _.stopPropagation(), Tt(c);
           }
         });
-      })(), null), v(M, () => Ft(t(), r()), null), v(M, E(qe, {
+      })(), null), $(M, () => Ft(t(), r()), null), $(M, E(qe, {
         get x() {
           return c.position[0] * n() + 10;
         },
@@ -1146,7 +1140,7 @@ const cn = (e) => {
         },
         get children() {
           var T = ql();
-          return v(T, () => c.id), y((_) => {
+          return $(T, () => c.id), y((_) => {
             var L = c.position[0] * n() + 30, O = c.position[1] * o() - 25;
             return L !== _.e && S(T, "x", _.e = L), O !== _.t && S(T, "y", _.t = O), _;
           }, {
@@ -1155,7 +1149,7 @@ const cn = (e) => {
           }), T;
         }
       }), null), M;
-    })()), I), v(g, () => Lt().map((c) => (() => {
+    })()), I), $(g, () => Lt().map((c) => (() => {
       var M = Ul();
       return y((T) => {
         var _ = `circle-${c.id}`, L = c.pos.x * n(), O = c.pos.y * o();
@@ -1165,7 +1159,7 @@ const cn = (e) => {
         t: void 0,
         a: void 0
       }), M;
-    })()), null), v(g, E(Fl, {}), null), v(d, (() => {
+    })()), null), $(g, E(Fl, {}), null), $(d, (() => {
       var c = X(() => !!(te() && A()));
       return () => c() && E(bl, {
         get selectedSwitch() {
@@ -1182,7 +1176,7 @@ const cn = (e) => {
           return o();
         }
       });
-    })(), null), v(d, (() => {
+    })(), null), $(d, (() => {
       var c = X(() => !!(j() && k()));
       return () => c() && E(Pl, {
         get selectedComputer() {
@@ -1190,7 +1184,7 @@ const cn = (e) => {
         },
         onClose: () => N(!1)
       });
-    })(), null), v(d, (() => {
+    })(), null), $(d, (() => {
       var c = X(() => !!(j() && xt()));
       return () => c() && E(Vl, {
         get selectedComputer() {
@@ -1202,7 +1196,7 @@ const cn = (e) => {
         selectedPrinter: Je,
         setSelectedPrinter: Pt,
         onConfirm: (M) => {
-          console.log("Selected printer ID:", M), Le(!1), $((T) => `${T}[Printer ${M} selected]`);
+          console.log("Selected printer ID:", M), Le(!1), v((T) => `${T}[Printer ${M} selected]`);
         },
         onClose: () => Le(!1),
         get scaleX() {
@@ -1212,7 +1206,7 @@ const cn = (e) => {
           return o();
         }
       });
-    })(), null), v(d, (() => {
+    })(), null), $(d, (() => {
       var c = X(() => !!Me());
       return () => c() && E(Xl, {
         get selectedPrinter() {
@@ -1227,7 +1221,7 @@ const cn = (e) => {
           return o();
         }
       });
-    })(), null), v(d, (() => {
+    })(), null), $(d, (() => {
       var c = X(() => !!(q() && F()));
       return () => c() && E(ot, {
         get selectedDevice() {
@@ -1235,7 +1229,7 @@ const cn = (e) => {
         },
         onClose: () => ce(!1),
         onPing: (M) => {
-          ve(M);
+          $e(M);
         },
         get scaleX() {
           return n();
@@ -1244,7 +1238,7 @@ const cn = (e) => {
           return o();
         }
       });
-    })(), null), v(d, (() => {
+    })(), null), $(d, (() => {
       var c = X(() => !!(le() && de()));
       return () => c() && E(ot, {
         get selectedDevice() {
@@ -1252,7 +1246,7 @@ const cn = (e) => {
         },
         onClose: () => C(!1),
         onPing: (M) => {
-          ve(M);
+          $e(M);
         },
         get scaleX() {
           return n();
@@ -1261,7 +1255,7 @@ const cn = (e) => {
           return o();
         }
       });
-    })(), null), v(d, (() => {
+    })(), null), $(d, (() => {
       var c = X(() => !!(j() && B()));
       return () => c() && E(Cl, {
         get selectedComputer() {
@@ -1269,7 +1263,7 @@ const cn = (e) => {
         },
         onClose: () => se(!1),
         onPing: () => {
-          ve(j());
+          $e(j());
         },
         onPrinterSelect: Et,
         onPrintTestPage: Nt,
@@ -1281,8 +1275,8 @@ const cn = (e) => {
           return o();
         }
       });
-    })(), null), v(d, (() => {
-      var c = X(() => !!vt());
+    })(), null), $(d, (() => {
+      var c = X(() => !!$t());
       return () => c() && E(Ml, {
         get selectedComputer() {
           return j();
@@ -1298,8 +1292,8 @@ const cn = (e) => {
           return o();
         }
       });
-    })(), null), v(d, (() => {
-      var c = X(() => !!$t());
+    })(), null), $(d, (() => {
+      var c = X(() => !!vt());
       return () => c() && E(Hl, {
         get selectedComputer() {
           return Me();

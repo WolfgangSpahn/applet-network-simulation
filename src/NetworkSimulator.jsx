@@ -130,11 +130,7 @@ export const NetworkSimulator = (props) => {
       let submitText = logBook();
       // if props.onSubmit is a function, call it
 
-      props.onSubmit({
-                          preventDefault: () => {},
-                          target: { value: submitText }
-                      });
-
+      props.onSubmit(submitText);
       setLogBook("");
     };
 
